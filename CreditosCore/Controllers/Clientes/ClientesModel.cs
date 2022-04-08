@@ -11,14 +11,16 @@ namespace CreditosCore.Controllers.Clientes
     public class ClientesModel
     {
         [Key]
-        public int ClientId { get; set; }
+        public int ClienteId { get; set; }
         [MaxLength(50)]
-        public string Name { get; set; }
+
+        
+        public string Nombre { get; set; }
         [MaxLength(60)]
-        public string FirstName { get; set; }
+        public string ApellidoPaterno { get; set; }
         [MaxLength(60)]
-        public string LastName { get; set; }
+        public string ApellidoMaterno { get; set; }
         [MaxLength(250)]
-        public string Email { get; set; }
+        public string Correo { get; set; }
     }
 }
