@@ -44,7 +44,34 @@ namespace CreditosCore.Migrations
 
                     b.HasKey("ClienteId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("clientes");
+                });
+
+            modelBuilder.Entity("CreditosCore.Controllers.Creditos.CreditoAmortizacionPagosModel", b =>
+                {
+                    b.Property<int>("CreditoAmortizacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CreditoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EstatusId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaVencimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("NumeroPago")
+                        .HasColumnType("int");
+
+                    b.HasKey("CreditoAmortizacionId");
+
+                    b.ToTable("creditosamortiguacion");
                 });
 
             modelBuilder.Entity("CreditosCore.Controllers.Creditos.CreditosModel", b =>

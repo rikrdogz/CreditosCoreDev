@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CreditosCore.Migrations
 {
     [DbContext(typeof(SqlDataContext))]
-    [Migration("20220406170851_CreateCreditosDB")]
-    partial class CreateCreditosDB
+    [Migration("20220408165111_InicialBD")]
+    partial class InicialBD
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,30 +23,57 @@ namespace CreditosCore.Migrations
 
             modelBuilder.Entity("CreditosCore.Controllers.Clientes.ClientesModel", b =>
                 {
-                    b.Property<int>("ClientId")
+                    b.Property<int>("ClienteId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Email")
+                    b.Property<string>("ApellidoMaterno")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("ApellidoPaterno")
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("Correo")
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("Nombre")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("ClientId");
+                    b.HasKey("ClienteId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("clientes");
+                });
+
+            modelBuilder.Entity("CreditosCore.Controllers.Creditos.CreditoAmortizacionPagosModel", b =>
+                {
+                    b.Property<int>("CreditoAmortizacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CreditoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EstatusId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaVencimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("NumeroPago")
+                        .HasColumnType("int");
+
+                    b.HasKey("CreditoAmortizacionId");
+
+                    b.ToTable("creditosamortiguacion");
                 });
 
             modelBuilder.Entity("CreditosCore.Controllers.Creditos.CreditosModel", b =>
