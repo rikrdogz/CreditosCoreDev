@@ -11,15 +11,15 @@ namespace CreditosCore.Controllers.Creditos
     public class CreditosModel
     {
         [Key]
-        public int CreditId { get; set; }
+        public int CreditoId { get; set; }
         [Required]
-        public int ClientId { get; set; }
+        public int ClienteId { get; set; }
         [Required]
         public string Folio { get; set; }
         [Required]
-        public DateTime CreatedDate { get; set; }
+        public DateTime FechaCreacion { get; set; }
         [Required]
-        public DateTime UpdatedtionDate { get; set; }
+        public DateTime FechaModificacion { get; set; }
 
         #region Amount
 
@@ -27,34 +27,34 @@ namespace CreditosCore.Controllers.Creditos
         /// Prestamo
         /// </summary>
         [Required]
-        public decimal IoanAmount { get; set; }
+        public decimal MontoPrestamo { get; set; }
 
         [Required]
-        public decimal InterestAmount { get; set; }
+        public decimal MontoInteres { get; set; }
 
         [Required]
-        public decimal TotalAmount { get; set; }
+        public decimal MontoTotal { get; set; }
 
         [Required]
-        public decimal PaymentAmount { get; set; }
+        public decimal MontoPago { get; set; }
 
         #endregion
         /// <summary>
         /// Plazos
         /// </summary>
         [Required]
-        public int IoanTerm { get; set; }
+        public int Plazos { get; set; }
 
         [Required]
-        public int IdUser { get; set; }
+        public int idUsuario { get; set; }
 
         [Required]
-        public decimal AmountDiscountPaymentFinal { get; set; }
+        public decimal DescuentoPagoFinal { get; set; }
 
         [Required]
-        public int TypePayment { get; set; }
+        public int TipoPago { get; set; }
 
         [Required]
-        public decimal NonPaymentCommission { get; set; }
+        public decimal ComisionFaltaPago { get; set; }
     }
 }

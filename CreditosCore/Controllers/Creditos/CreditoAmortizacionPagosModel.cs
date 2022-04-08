@@ -19,6 +19,7 @@ namespace CreditosCore.Controllers.Creditos
         [Required]
         [ForeignKey("CreditoId")]
         public int CreditoId { get; set; }
+        public CreditosModel credito { get; set; }
 
         [Required]
         public decimal Monto { get; set; }
