@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32106.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditosCore", "CreditosCore\CreditosCore.csproj", "{335E4EC4-6E72-4D21-AC86-C5C746617A0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditosCore", "CreditosCore\CreditosCore.csproj", "{335E4EC4-6E72-4D21-AC86-C5C746617A0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCreditosCore", "TestCreditosCore\TestCreditosCore.csproj", "{FD8690EB-41A3-4EEC-A9CB-E396B3755338}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{335E4EC4-6E72-4D21-AC86-C5C746617A0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{335E4EC4-6E72-4D21-AC86-C5C746617A0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{335E4EC4-6E72-4D21-AC86-C5C746617A0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD8690EB-41A3-4EEC-A9CB-E396B3755338}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD8690EB-41A3-4EEC-A9CB-E396B3755338}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD8690EB-41A3-4EEC-A9CB-E396B3755338}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD8690EB-41A3-4EEC-A9CB-E396B3755338}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
