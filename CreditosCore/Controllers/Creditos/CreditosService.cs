@@ -21,6 +21,12 @@ namespace CreditosCore.Controllers.Creditos
             return listaCreditos;
         }
 
+        public List<CreditosModel> ObtenerCreditosDelCliente(int idCliente)
+        {
+            var listaCreditos = db.creditos.Where(c => c.ClienteId == idCliente).ToList();
+            return listaCreditos;
+        }
+
         public int GuardarCredito(CreditoViewModel creditoDatos)
         {
             try
