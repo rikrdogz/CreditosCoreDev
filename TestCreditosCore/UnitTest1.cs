@@ -25,7 +25,7 @@ namespace TestCreditosCore
         }
 
    
-        [Test]
+        [Test, Order(1)]
         public void AgregarCliente()
         {
             var cliente = new ClientesModel()
@@ -40,13 +40,11 @@ namespace TestCreditosCore
 
 
             Assert.AreEqual(cliente.ClienteId, 0, "Cliente creado");
-
-            clientesTemporales.Add(cliente);
             
         }
 
-        [Test]
-        public void AgregarClientesMasivos()
+        [Test, Order(2)]
+        public void AgregarClientesTemporalesMasivos()
         {
 
             foreach (var cliente in clientesTemporales)
@@ -54,15 +52,20 @@ namespace TestCreditosCore
                 serviceCliente = new ClientesService();
                 serviceCliente.AgregarCliente(cliente);
 
-                if (cliente.ClienteId > 0)
-                {
-                    ClientesAgregados.Add(cliente);
-               
-                }
             }
 
 
             Assert.IsTrue(true);
+        }
+
+        [Test, Order(3)]
+        public void AgregarClientesGuardadosBD()
+        {
+            var listaClientes = serviceCliente.ObtenerListaClientes();
+            if (listaClientes.Count > 0)
+            {
+                ClientesAgregados = listaClientes;
+            }
         }
 
         [Test]
@@ -75,7 +78,7 @@ namespace TestCreditosCore
                 cliente = clienteDefault,
                 credito = new CreditosModel()
                 {
-                    ClienteId = 0,
+                    ClienteId = clienteDefault.ClienteId,
                     ComisionFaltaPago = 20,
                     DescuentoPagoFinal = 30,
                     FechaCreacion = System.DateTime.Today,

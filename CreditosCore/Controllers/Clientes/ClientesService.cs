@@ -27,6 +27,19 @@ namespace CreditosCore.Controllers.Clientes
             }
         }
 
+        public ClientesModel ObtenerClientePorId(int idCliente)
+        {
+            try
+            {
+                return db.clientes.Where(c => c.ClienteId == idCliente).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public int AgregarCliente(ClientesModel cliente)
         {
             db.clientes.Add(cliente);

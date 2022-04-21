@@ -1,5 +1,6 @@
 ﻿using CreditosCore.Controllers.Clientes;
 using CreditosCore.Database;
+using CreditosCore.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace CreditosCore.Controllers.Creditos
     public class CreditosService
     {
         private SqlDataContext db;
+        
         public CreditosService()
         {
             db = new SqlDataContext();
@@ -39,6 +41,15 @@ namespace CreditosCore.Controllers.Creditos
                     throw new Exception("No se establecio el cliente");
                 }
 
+                //Obtener datos del cliente
+                var clienteInfo = new ClientesService().ObtenerClientePorId(creditoDatos.cliente.ClienteId);
+                 
+                if (clienteInfo == null)
+                {
+                    throw new Exception("No se encontro el cliente enviado");
+                }
+
+
                 db.creditos.Add(creditoDatos.credito);
                 db.SaveChanges();
 
@@ -49,6 +60,62 @@ namespace CreditosCore.Controllers.Creditos
 
                 throw;
             }
+        }
+
+        public bool ValidarNuevoCredito(CreditosModel credito)
+        {
+            
+            if (credito == null)
+            {
+                throw new CreditoSistemaExcepcion("No se establecio los datos del credito");
+
+            }
+
+            if (credito.ClienteId <=0 )
+            {
+                throw new CreditoSistemaExcepcion("No se establecio el cliente");
+            }
+
+            if (credito.ComisionFaltaPago < 0)
+            {
+                throw new CreditoSistemaExcepcion("Debe poner una comision por falta de pago mayor o igual a cero");
+            }
+
+            if (credito.MontoPago <= 0)
+            {
+                throw new CreditoSistemaExcepcion("Debe ingresar un monto de pago recurrente");
+            }
+
+            if (credito.ComisionFaltaPago > credito.MontoPago)
+            {
+                throw new CreditoSistemaExcepcion("La Comision por falta de pago no debe ser mayor al monto del pago");
+            }
+
+
+            if (credito.DescuentoPagoFinal <= 0)
+            {
+                throw new CreditoSistemaExcepcion("Debe ingresar un descuento final mayor o igual a cero");
+            }
+
+            if (credito.MontoInteres > credito.MontoPrestamo)
+            {
+                throw new CreditoSistemaExcepcion("El monto del interes no debe ser mayor a monto prestado");
+            }
+
+            if (credito.MontoTotal != (credito.MontoPrestamo + credito.MontoInteres) )
+            {
+                throw new CreditoSistemaExcepcion("El monto total debe ser la suma de monto prestado + monto interes");
+            }
+
+            if (credito.Plazos == 0)
+            {
+                throw new CreditoSistemaExcepcion("El monto total debe ser la suma de monto prestado + monto interes");
+            }
+
+            
+
+            return true;
+           
         }
     }
 }

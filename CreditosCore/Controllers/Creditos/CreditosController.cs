@@ -52,7 +52,7 @@ namespace CreditosCore.Controllers.Creditos
             {
                 return Ok(creditoServicio.ObtenerCreditosDelCliente(idcliente));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 return BadRequest(ex.Message);
