@@ -4,14 +4,16 @@ using CreditosCore.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CreditosCore.Migrations
 {
     [DbContext(typeof(SqlDataContext))]
-    partial class SqlDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220421024200_AddPagos")]
+    partial class AddPagos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,36 +131,6 @@ namespace CreditosCore.Migrations
                     b.HasKey("CreditoId");
 
                     b.ToTable("creditos");
-                });
-
-            modelBuilder.Entity("CreditosCore.Controllers.Pagos.PagosModel", b =>
-                {
-                    b.Property<int>("PagoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CreditoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EstatusId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Monto")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("fechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("fechaPago")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("idUsuario")
-                        .HasColumnType("int");
-
-                    b.HasKey("PagoId");
-
-                    b.ToTable("pagos");
                 });
 
             modelBuilder.Entity("CreditosCore.Controllers.Creditos.CreditoAmortizacionPagosModel", b =>

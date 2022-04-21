@@ -1,5 +1,6 @@
 ﻿using CreditosCore.Controllers.Clientes;
 using CreditosCore.Controllers.Creditos;
+using CreditosCore.Controllers.Pagos;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace CreditosCore.Database
         public DbSet<ClientesModel> clientes { get; set; }
         public DbSet<CreditosModel> creditos { get; set; }
         public DbSet<CreditoAmortizacionPagosModel> creditosAmortiguacion { get; set; }
+
+        public DbSet<PagosModel> pagos { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=tcp:creditos.database.windows.net,1433;Initial Catalog=creditos_dev;Persist Security Info=False;User ID=ricardo;Password=Rikrdogz7;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");

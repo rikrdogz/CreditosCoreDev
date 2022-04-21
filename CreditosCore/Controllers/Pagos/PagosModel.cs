@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CreditosCore.Controllers.Pagos
 {
+    [Table("pagos")]
     public class PagosModel
     {
+        [Key]
         public int PagoId { get; set; }
         public int CreditoId { get; set; }
         public decimal Monto { get; set; }
