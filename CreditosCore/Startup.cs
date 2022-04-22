@@ -74,17 +74,16 @@ namespace CreditosCore
                 c.SerializeAsV2 = true;
             });
 
-            if (env.IsDevelopment())
+          
+            app.UseDeveloperExceptionPage();
+
+            app.UseSwaggerUI(c =>
             {
-                app.UseDeveloperExceptionPage();
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
 
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
+            });
 
-                });
-
-            }
+            
 
            
             
