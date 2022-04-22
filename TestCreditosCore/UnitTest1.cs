@@ -4,6 +4,7 @@ using CreditosCore.Controllers.Clientes;
 using System.Linq;
 using CreditosCore.Controllers.Creditos;
 using System.Collections.Generic;
+using CreditosCore.Controllers.Pagos;
 
 namespace TestCreditosCore
 {
@@ -11,16 +12,21 @@ namespace TestCreditosCore
     {
         ClientesService serviceCliente;
         CreditosService serviceCreditos;
+        PagoService servicePago; 
 
         List<ClientesModel> clientesTemporales;
         List<ClientesModel> ClientesAgregados;
+        List<CreditosModel> creditoAgregados;
 
         public Tests()
         {
             serviceCliente = new ClientesService();
             serviceCreditos = new CreditosService();
+            servicePago = new PagoService();
+
             ClientesAgregados = new List<ClientesModel>();
             clientesTemporales = new List<ClientesModel>();
+            creditoAgregados = new List<CreditosModel>();
         }
 
         [SetUp]
@@ -76,12 +82,12 @@ namespace TestCreditosCore
             }
         }
 
-        [Test]
+        [Test, Order(4)]
         public void AgregarCredito()
         {
             //obtener un cliente por default
             var clienteDefault = serviceCliente.ObtenerListaClientes().FirstOrDefault();
-            var idCredito = serviceCreditos.GuardarCredito(new CreditoViewModel()
+            var datosCredito = new CreditoViewModel()
             {
                 cliente = clienteDefault,
                 credito = new CreditosModel()
@@ -99,10 +105,42 @@ namespace TestCreditosCore
                     Plazos = 9,
                     TipoPago = 1
                 }
-            });
+            };
 
-            Assert.IsTrue(idCredito > 0, "No se pudo registrar el credito");
+            var idCredito = serviceCreditos.GuardarCredito(datosCredito);
 
+            bool Comparacion = (idCredito > 0);
+
+            Assert.IsTrue(Comparacion, "No se pudo registrar el credito");
+
+            if (Comparacion)
+            {
+                this.creditoAgregados.Add(datosCredito.credito);
+            }
+
+        }
+
+        [Test, Order(5)]
+        public void AgregarPago()
+        {
+            foreach (var credito in creditoAgregados)
+            {
+                var pago = new PagosModel()
+                {
+                    CreditoId = credito.CreditoId,
+                    fechaCreacion = System.DateTime.UtcNow,
+                    EstatusId = 1,
+                    idUsuario = 1,
+                    Monto = 150,
+                    fechaPago = System.DateTime.UtcNow
+
+                };
+
+                servicePago.AgregarPagoCliente(pago);
+
+                Assert.IsTrue(pago.PagoId > 0, "No se guardo el pago");
+
+            }
         }
     }
 }

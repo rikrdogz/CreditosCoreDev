@@ -1,5 +1,7 @@
-﻿using CreditosCore.Database;
+﻿using CreditosCore.Controllers.Creditos;
+using CreditosCore.Database;
 using CreditosCore.Shared;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,20 @@ namespace CreditosCore.Controllers.Pagos
         {
             db = new SqlDataContext();
         }
+
+        public List<PagosModel> ObtenerPagos()
+        {
+            try
+            {
+                return db.pagos.AsNoTracking().ToList();
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("No se pudo obtener los pagos");
+            }
+        }
+
         public int AgregarPagoCliente(PagosModel pago)
         {
             try
@@ -61,6 +77,13 @@ namespace CreditosCore.Controllers.Pagos
             if (pago.Monto <=0)
             {
                 throw new CreditoSistemaExcepcion("No se establecio el monto del pago");
+            }
+
+            var exiteCredito = new CreditosService().BuscarCredito(pago.CreditoId);
+
+            if (exiteCredito == null)
+            {
+                throw new CreditoSistemaExcepcion("No existe credito para realizar el pago");
             }
 
             return true;

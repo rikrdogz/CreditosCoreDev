@@ -30,6 +30,11 @@ namespace CreditosCore.Controllers.Creditos
             return listaCreditos;
         }
 
+        public CreditosModel BuscarCredito(int idCredito)
+        {
+            return db.creditos.AsNoTracking().Where(c => c.CreditoId == idCredito).FirstOrDefault();
+        }
+
         public int GuardarCredito(CreditoViewModel creditoDatos)
         {
             try
