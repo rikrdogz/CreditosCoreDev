@@ -15,13 +15,18 @@ namespace TestCreditosCore
         List<ClientesModel> clientesTemporales;
         List<ClientesModel> ClientesAgregados;
 
-        [SetUp]
-        public void Setup()
+        public Tests()
         {
             serviceCliente = new ClientesService();
             serviceCreditos = new CreditosService();
             ClientesAgregados = new List<ClientesModel>();
             clientesTemporales = new List<ClientesModel>();
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            
         }
 
    
@@ -31,13 +36,13 @@ namespace TestCreditosCore
             var cliente = new ClientesModel()
             {
                 ClienteId = 0,
-                ApellidoMaterno = "Genovez",
+                ApellidoMaterno = Faker.Name.Middle(),
                 ApellidoPaterno = Faker.Name.Last(),
-                Correo = "luisricardogz@gmail.com",
+                Correo = Faker.Internet.Email(),
                 Nombre = Faker.Name.FullName()
             };
 
-
+            clientesTemporales.Add(cliente);
 
             Assert.AreEqual(cliente.ClienteId, 0, "Cliente creado");
             
@@ -47,15 +52,18 @@ namespace TestCreditosCore
         public void AgregarClientesTemporalesMasivos()
         {
 
+            if(clientesTemporales.Count == 0)
+            {
+                throw new System.Exception("no se encontraron clientes temporales");
+            }
+
             foreach (var cliente in clientesTemporales)
             {
                 serviceCliente = new ClientesService();
                 serviceCliente.AgregarCliente(cliente);
-
+                Assert.IsTrue(cliente.ClienteId > 0, "No se guardo el cliente");
             }
 
-
-            Assert.IsTrue(true);
         }
 
         [Test, Order(3)]

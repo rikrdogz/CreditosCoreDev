@@ -22,7 +22,7 @@ namespace CreditosCore.Controllers.Clientes
         {
             try
             {
-                var listaClientes = new List<ClientesModel>();
+                var listaClientes =  servicioCliente.ObtenerListaClientes();
                 return Ok(listaClientes);
             }
             catch (Exception ex)

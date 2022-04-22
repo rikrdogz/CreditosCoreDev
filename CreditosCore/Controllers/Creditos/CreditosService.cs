@@ -1,6 +1,7 @@
 ﻿using CreditosCore.Controllers.Clientes;
 using CreditosCore.Database;
 using CreditosCore.Shared;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace CreditosCore.Controllers.Creditos
 
         public List<CreditosModel> ObtenerCreditosDelCliente(int idCliente)
         {
-            var listaCreditos = db.creditos.Where(c => c.ClienteId == idCliente).ToList();
+            var listaCreditos = db.creditos.AsNoTracking().Where(c => c.ClienteId == idCliente).ToList();
             return listaCreditos;
         }
 

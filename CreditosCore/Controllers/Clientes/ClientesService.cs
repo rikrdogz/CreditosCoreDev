@@ -1,4 +1,5 @@
 ﻿using CreditosCore.Database;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace CreditosCore.Controllers.Clientes
         {
             try
             {
-                return db.clientes.ToList();
+                return db.clientes.AsNoTracking().ToList();
             }
             catch (Exception ex)
             {
@@ -31,7 +32,7 @@ namespace CreditosCore.Controllers.Clientes
         {
             try
             {
-                return db.clientes.Where(c => c.ClienteId == idCliente).FirstOrDefault();
+                return db.clientes.AsNoTracking().Where(c => c.ClienteId == idCliente).FirstOrDefault();
             }
             catch (Exception)
             {
