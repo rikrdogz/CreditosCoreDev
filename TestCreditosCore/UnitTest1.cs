@@ -142,5 +142,31 @@ namespace TestCreditosCore
 
             }
         }
+        
+        [Test, Order(6)]
+        public void AgregarPagoCreditoExistente()
+        {
+            foreach (var credito in serviceCreditos.ObtenerCreditos().Take(2))
+            {
+                for (int i = 0; i < 9; i++)
+                {
+                    var pago = new PagosModel()
+                    {
+                        CreditoId = credito.CreditoId,
+                        fechaCreacion = System.DateTime.UtcNow,
+                        EstatusId = 1,
+                        idUsuario = 1,
+                        Monto = 150,
+                        fechaPago = System.DateTime.UtcNow
+
+                    };
+
+                    servicePago.AgregarPagoCliente(pago);
+
+                    Assert.IsTrue(pago.PagoId > 0, "No se guardo el pago");
+                }
+                
+            }
+        }
     }
 }
