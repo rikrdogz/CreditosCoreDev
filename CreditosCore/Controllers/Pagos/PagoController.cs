@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace CreditosCore.Controllers.Pagos
 {
+    [ApiController]
+    [Route("[controller]")]
     public class PagoController : Controller
     {
         PagoService servicePago;

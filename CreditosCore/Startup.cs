@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace CreditosCore
 {
@@ -29,8 +32,23 @@ namespace CreditosCore
         {
             //Rikrdogz7
             services.AddControllers();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
             AddSwagger(services);
-            //services.AddDbContext<SqlDataContext>(option => option.UseSqlServer(@"Server=tcp:creditos.database.windows.net,1433;Initial Catalog=creditos_dev;Persist Security Info=False;User ID=ricardo;Password=Rikrdogz7;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+            
 
         }
 
@@ -82,11 +100,6 @@ namespace CreditosCore
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
 
             });
-
-            
-
-           
-            
 
             app.UseRouting();
 

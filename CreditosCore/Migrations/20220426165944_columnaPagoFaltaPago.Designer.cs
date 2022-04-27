@@ -4,14 +4,16 @@ using CreditosCore.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CreditosCore.Migrations
 {
     [DbContext(typeof(SqlDataContext))]
-    partial class SqlDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220426165944_columnaPagoFaltaPago")]
+    partial class columnaPagoFaltaPago
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,36 +167,6 @@ namespace CreditosCore.Migrations
                     b.HasKey("PagoId");
 
                     b.ToTable("pagos");
-                });
-
-            modelBuilder.Entity("CreditosCore.Controllers.Usuarios.UsuariosModel", b =>
-                {
-                    b.Property<int>("usuarioID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("apellidoPaterno")
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<string>("contra")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("nickname")
-                        .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
-
-                    b.Property<string>("nombre")
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.Property<DateTime>("ultimoInicioSesion")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("usuarioID");
-
-                    b.ToTable("usuarios");
                 });
 
             modelBuilder.Entity("CreditosCore.Controllers.Creditos.CreditoAmortizacionPagosModel", b =>

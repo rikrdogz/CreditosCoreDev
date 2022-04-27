@@ -15,6 +15,7 @@ namespace CreditosCore.Controllers.Pagos
         public int CreditoId { get; set; }
         public decimal Monto { get; set; }
         public decimal descuento { get; set; }
+        public decimal faltaDePago { get; set; }
         public DateTime fechaCreacion { get; set; }
         public DateTime fechaPago { get; set; }
         public int EstatusId { get; set; }

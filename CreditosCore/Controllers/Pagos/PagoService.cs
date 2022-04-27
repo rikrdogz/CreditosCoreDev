@@ -77,8 +77,44 @@ namespace CreditosCore.Controllers.Pagos
                 throw new CreditoSistemaExcepcion($"El monto a pagar supera el maximo para el credito, este monto del pago debe ser {pagoSugerido}");
             }
 
+            if (pago.descuento > credito.DescuentoPagoFinal)
+            {
+                throw new CreditoSistemaExcepcion($"El monto de descuento no puede ser mayor a {credito.DescuentoPagoFinal} ,establecido en el credito.");
+            }
+
+            if (pago.faltaDePago > credito.ComisionFaltaPago)
+            {
+                throw new CreditoSistemaExcepcion($"El monto de comision por falta de pago no puede ser mayor a {credito.ComisionFaltaPago} ,establecido en el credito.");
+            }
+
             return true;
 
+        }
+
+        public List<PagoCreditoSumViewModel> BuscarCreditosPendientesPago()
+        {
+            var lista = from credito in db.creditos.AsNoTracking()
+                        join pago in db.pagos.AsNoTracking()
+                        on credito.CreditoId equals pago.CreditoId
+                        group pago by new { idCredito = credito.CreditoId, montoTotalCredito = credito.MontoTotal, montoRecurrente = credito.MontoPago } into grupoPago
+                        where  grupoPago.Sum(p=>p.Monto) < grupoPago.Key.montoTotalCredito
+                        select new PagoCreditoSumViewModel() { creditoId = grupoPago.Key.idCredito, sumaMontos = grupoPago.Sum(p => p.Monto), montoPagoRecurrente = grupoPago.Key.montoRecurrente };
+                       
+
+
+            return lista.ToList();
+        }
+
+        public List<PagoCreditoSumViewModel> BuscarCreditosPagadosCompletamente()
+        {
+            var lista = from credito in db.creditos.AsNoTracking()
+                        join pago in db.pagos.AsNoTracking()
+                        on credito.CreditoId equals pago.CreditoId
+                        group pago by new { idCredito = credito.CreditoId, montoTotalCredito = credito.MontoTotal, montoRecurrente = credito.MontoPago } into grupoPago
+                        where grupoPago.Sum(p => p.Monto) == grupoPago.Key.montoTotalCredito
+                        select new PagoCreditoSumViewModel() { creditoId = grupoPago.Key.idCredito, sumaMontos = grupoPago.Sum(p => p.Monto), montoPagoRecurrente = grupoPago.Key.montoRecurrente };
+
+            return lista.ToList();
         }
 
         public int AgregarPagoCliente(PagosModel pago)
@@ -96,7 +132,7 @@ namespace CreditosCore.Controllers.Pagos
             {
                 throw ex;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                 throw new Exception("No se pudo guardar el pago");

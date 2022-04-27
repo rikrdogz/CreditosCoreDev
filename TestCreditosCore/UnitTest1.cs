@@ -5,6 +5,7 @@ using System.Linq;
 using CreditosCore.Controllers.Creditos;
 using System.Collections.Generic;
 using CreditosCore.Controllers.Pagos;
+using CreditosCore.Shared;
 
 namespace TestCreditosCore
 {
@@ -135,7 +136,7 @@ namespace TestCreditosCore
                     fechaPago = System.DateTime.UtcNow
 
                 };
-
+               
                 servicePago.AgregarPagoCliente(pago);
 
                 Assert.IsTrue(pago.PagoId > 0, "No se guardo el pago");
@@ -146,13 +147,13 @@ namespace TestCreditosCore
         [Test, Order(6)]
         public void AgregarPagoCreditoExistente()
         {
-            foreach (var credito in serviceCreditos.ObtenerCreditos().Take(2))
+            foreach (var credito in servicePago.BuscarCreditosPendientesPago())
             {
-                for (int i = 0; i < 9; i++)
+                for (int i = 0; i < 2; i++)
                 {
                     var pago = new PagosModel()
                     {
-                        CreditoId = credito.CreditoId,
+                        CreditoId = credito.creditoId,
                         fechaCreacion = System.DateTime.UtcNow,
                         EstatusId = 1,
                         idUsuario = 1,
@@ -167,6 +168,55 @@ namespace TestCreditosCore
                 }
                 
             }
+        }
+        
+    
+        [Test, Order(9)]
+        public void PagoNoPasables()
+        {
+            foreach (var credito in servicePago.BuscarCreditosPagadosCompletamente())
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    var pago = new PagosModel()
+                    {
+                        CreditoId = credito.creditoId,
+                        fechaCreacion = System.DateTime.UtcNow,
+                        EstatusId = 1,
+                        idUsuario = 1,
+                        Monto = 150,
+                        fechaPago = System.DateTime.UtcNow
+
+                    };
+
+                    try
+                    {
+                        servicePago.AgregarPagoCliente(pago);
+                    }
+                    catch(CreditoSistemaExcepcion ex)
+                    {
+                        
+                    }
+                    catch (System.Exception)
+                    {
+
+                        throw;
+                    }
+                    
+
+                    Assert.IsTrue(pago.PagoId == 0, "El pago se aplico, pero no debio pasar");
+                }
+
+            }
+        }
+
+        [Test, Order(7)]
+        public void ObtenerCreditosPendientes()
+        {
+            var lista = servicePago.BuscarCreditosPendientesPago();
+
+            Assert.IsTrue(lista.Count > 0, "No se encontraron creditos pendientes");
+
         }
     }
 }

@@ -35,6 +35,8 @@ namespace CreditosCore.Controllers.Creditos
             return db.creditos.AsNoTracking().Where(c => c.CreditoId == idCredito).FirstOrDefault();
         }
 
+        
+
         public int GuardarCredito(CreditoViewModel creditoDatos)
         {
             try
@@ -55,6 +57,7 @@ namespace CreditosCore.Controllers.Creditos
                     throw new Exception("No se encontro el cliente enviado");
                 }
 
+                ValidarNuevoCredito(creditoDatos.credito);
 
                 db.creditos.Add(creditoDatos.credito);
                 db.SaveChanges();
