@@ -15,6 +15,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CreditosCore.Shared;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CreditosCore
 {
@@ -33,18 +35,23 @@ namespace CreditosCore
             //Rikrdogz7
             services.AddControllers();
 
+            DataShared.ConfigIssuer = Configuration["Jwt:Issuer"];
+            DataShared.KeyJWT = Configuration["Jwt:Key"];
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
+                
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    ValidIssuer = DataShared.ConfigIssuer,
+                    ValidAudience = DataShared.ConfigIssuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(DataShared.KeyJWT))
                 };
             });
             AddSwagger(services);
@@ -102,7 +109,7 @@ namespace CreditosCore
             });
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

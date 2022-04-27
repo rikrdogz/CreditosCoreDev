@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CreditosCore.Controllers.Usuarios
 {
@@ -17,7 +19,45 @@ namespace CreditosCore.Controllers.Usuarios
             serviceInicioSesion = new InicioSesionService();
         }
 
-        public IActionResult iniciar([FromBody] UsuariosModel)
+        [HttpPost]
+        public IActionResult iniciar([FromBody] UsuarioPorIniciarViewModel usuarioData)
+        {
+            IActionResult respuesta = Unauthorized();
+
+            try
+            {
+                var usuarioValido = serviceInicioSesion.ValidarInicio(usuarioData);
+
+                if (usuarioValido == null)
+                {
+                    return BadRequest("usuario o contraseña incorrecta");
+                }
+
+                usuarioValido.token = serviceInicioSesion.GenerarToken(usuarioData);
+
+                return Ok(usuarioValido);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("No se pudo iniciar sesion");
+            }
+
+            
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Obtener()
+        {
+            try
+            {
+                return Ok(serviceInicioSesion.CantidadUsuarios());
+            }
+            catch (Exception)
+            {
+                return BadRequest("No se pudo obtener informacion");
+            }
+        }
         
     }
 }
