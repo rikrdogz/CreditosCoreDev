@@ -55,8 +55,8 @@ namespace CreditosCore
                 };
             });
             AddSwagger(services);
-            
 
+            
         }
 
         private void AddSwagger(IServiceCollection services)
@@ -109,6 +109,7 @@ namespace CreditosCore
             });
 
             app.UseRouting();
+            
             app.UseAuthentication();
             app.UseAuthorization();
 

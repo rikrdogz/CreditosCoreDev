@@ -8,7 +8,7 @@ namespace CreditosCore.Controllers.Pagos
 {
     [ApiController]
     [Route("[controller]")]
-    public class PagoController : Controller
+    public class PagoController : ControllerBase
     {
         PagoService servicePago;
         public PagoController()
