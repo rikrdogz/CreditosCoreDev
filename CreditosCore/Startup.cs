@@ -113,13 +113,11 @@ namespace CreditosCore
             
             app.UseAuthentication();
             app.UseAuthorization();
-            
-            app.UseSwagger();
-
-            app.UseEndpoints(endpoints =>
+         
+            /*app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
+            });*/
 
             
 
