@@ -22,6 +22,8 @@ namespace CreditosCore.Controllers.Clientes
         {
             try
             {
+
+                return Ok("HMundo");
                 var listaClientes =  servicioCliente.ObtenerListaClientes();
                 return Ok(listaClientes);
             }
