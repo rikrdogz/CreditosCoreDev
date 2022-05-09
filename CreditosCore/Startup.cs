@@ -105,20 +105,24 @@ namespace CreditosCore
           
             app.UseDeveloperExceptionPage();
 
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
-
-            });
+            
 
             app.UseRouting();
             
             app.UseAuthentication();
             app.UseAuthorization();
+            
+            app.UseSwagger();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
+
             });
         }
     }
