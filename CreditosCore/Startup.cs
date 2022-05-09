@@ -104,7 +104,12 @@ namespace CreditosCore
                 c.SerializeAsV2 = true;
             });
 
-          
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
+
+            });
+
             app.UseDeveloperExceptionPage();
 
             
@@ -114,18 +119,14 @@ namespace CreditosCore
             app.UseAuthentication();
             app.UseAuthorization();
          
-            /*app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });*/
+            });
 
             
 
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
-
-            });
+            
         }
     }
 }
