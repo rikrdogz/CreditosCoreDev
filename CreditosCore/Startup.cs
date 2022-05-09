@@ -61,6 +61,8 @@ namespace CreditosCore
 
         private void AddSwagger(IServiceCollection services)
         {
+            services.AddMvc();
+
             services.AddSwaggerGen(c =>
             {
                 //SwaggerDoc("v1", new Info { title = "My API", version = "v1" });
@@ -89,7 +91,7 @@ namespace CreditosCore
 
             });
 
-            services.AddMvc();
+            
 
         }
 
@@ -118,6 +120,8 @@ namespace CreditosCore
             {
                 endpoints.MapControllers();
             });
+
+            
 
             app.UseSwaggerUI(c =>
             {
