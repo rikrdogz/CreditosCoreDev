@@ -30,6 +30,33 @@ namespace CreditosCore.Controllers.Creditos
             return listaCreditos;
         }
 
+        public CreditoActivoViewModel ObtenerCreditoActivo(int idCliente)
+        {
+            var creditoActivo = from credito in db.creditos.AsNoTracking()
+                                join pago in db.pagos.AsNoTracking()
+                                on new { credito.CreditoId } equals new {  pago.CreditoId }
+                                join cliente in db.clientes.AsNoTracking()
+                                on new { credito.ClienteId} equals new { cliente.ClienteId}
+                                group pago by new { 
+                                    idCredito = credito.CreditoId, 
+                                    idCliente = credito.ClienteId,
+                                    montoTotalCredito = credito.MontoTotal, 
+                                    montoRecurrente = credito.MontoPago, 
+                                    montoPrestado = credito.MontoPrestamo,
+                                    nombre = cliente.Nombre,
+                                    paterno = cliente.ApellidoPaterno,
+                                    materno = cliente.ApellidoMaterno
+                                } into grupoPago
+                                
+                                where grupoPago.Sum(p => p.Monto) < grupoPago.Key.montoTotalCredito & grupoPago.Key.idCliente == idCliente
+                                orderby grupoPago.Key.idCredito descending
+                                select new CreditoActivoViewModel() { idCredito = grupoPago.Key.idCredito, montoPagado = grupoPago.Sum(p => p.Monto), montoPrestado = grupoPago.Key.montoPrestado, pendientePago = ( grupoPago.Key.montoPrestado - grupoPago.Sum(p => p.Monto)),
+                                    cliente =  $" {grupoPago.Key.nombre} {grupoPago.Key.paterno} {grupoPago.Key.materno}"
+                                };
+
+            return creditoActivo.FirstOrDefault();
+        }
+
         public CreditosModel BuscarCredito(int idCredito)
         {
             return db.creditos.AsNoTracking().Where(c => c.CreditoId == idCredito).FirstOrDefault();
