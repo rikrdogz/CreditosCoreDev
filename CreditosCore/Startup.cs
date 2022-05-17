@@ -55,12 +55,14 @@ namespace CreditosCore
                 };
             });
             AddSwagger(services);
-            
 
+            
         }
 
         private void AddSwagger(IServiceCollection services)
         {
+            services.AddMvc();
+
             services.AddSwaggerGen(c =>
             {
                 //SwaggerDoc("v1", new Info { title = "My API", version = "v1" });
@@ -88,6 +90,9 @@ namespace CreditosCore
                 });
 
             });
+
+            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,23 +104,29 @@ namespace CreditosCore
                 c.SerializeAsV2 = true;
             });
 
-          
-            app.UseDeveloperExceptionPage();
-
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
 
             });
 
+            app.UseDeveloperExceptionPage();
+
+            
+
             app.UseRouting();
+            
             app.UseAuthentication();
             app.UseAuthorization();
-
+         
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            
+
+            
         }
     }
 }

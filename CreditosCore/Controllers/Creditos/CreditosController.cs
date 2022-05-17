@@ -58,5 +58,18 @@ namespace CreditosCore.Controllers.Creditos
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("creditoActivo/{idCliente}")]
+        public IActionResult creditoActivo(int idCliente)
+        {
+            try
+            {
+                return Ok(creditoServicio.ObtenerCreditoActivo(idCliente));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

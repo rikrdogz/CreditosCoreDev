@@ -117,6 +117,14 @@ namespace CreditosCore.Controllers.Pagos
             return lista.ToList();
         }
 
+        public List<PagoViewModel> BuscarPorCliente(int idCliente)
+        {
+            var lista = from pago in db.pagos.AsNoTracking()
+                        join credito in db.creditos.AsNoTracking()
+                        on new { pago.CreditoId } equals new { credito.CreditoId }
+
+        }
+
         public int AgregarPagoCliente(PagosModel pago)
         {
             try
