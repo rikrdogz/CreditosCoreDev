@@ -107,7 +107,7 @@ namespace CreditosCore.Controllers.Creditos
         {
             var creditoPendiente = db.creditos.Where(c => c.ClienteId == idCliente).FirstOrDefault();
 
-            var pagosRealizados = new pagoservice()
+            return (creditoPendiente != null);
         }
 
         public bool ValidarNuevoCredito(CreditosModel credito)

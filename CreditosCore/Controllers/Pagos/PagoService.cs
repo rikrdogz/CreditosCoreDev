@@ -122,7 +122,13 @@ namespace CreditosCore.Controllers.Pagos
             var lista = from pago in db.pagos.AsNoTracking()
                         join credito in db.creditos.AsNoTracking()
                         on new { pago.CreditoId } equals new { credito.CreditoId }
+                        join cliente in db.clientes.AsNoTracking()
+                        on new { credito.ClienteId } equals new { cliente.ClienteId }
+                        where cliente.ClienteId == idCliente
+                        orderby pago.PagoId
+                        select new PagoViewModel() { idPago = pago.PagoId, descuento = pago.descuento, faltaPago = pago.faltaDePago, fechaPago = pago.fechaPago.ToShortDateString(), monto = pago.Monto, nombre = ($"{cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno}"), numeroPago = "#" };
 
+            return lista.ToList();
         }
 
         public int AgregarPagoCliente(PagosModel pago)

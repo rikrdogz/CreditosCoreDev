@@ -30,6 +30,19 @@ namespace CreditosCore.Controllers.Pagos
             }
         }
 
+        [HttpGet("porcliente/{idcliente}")]
+        public IActionResult porcliente(int idcliente)
+        {
+            try
+            {
+                return Ok(servicePago.BuscarPorCliente(idcliente));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public IActionResult GuardarPago([FromBody] PagosModel pago)
         {
