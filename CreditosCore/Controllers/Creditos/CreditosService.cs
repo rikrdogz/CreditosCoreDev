@@ -57,6 +57,11 @@ namespace CreditosCore.Controllers.Creditos
                     throw new Exception("No se encontro el cliente enviado");
                 }
 
+                //Establecer Campos de fecha
+                creditoDatos.credito.FechaCreacion = System.DateTime.Today;
+
+                creditoDatos.credito.FechaModificacion = System.DateTime.Today;
+
                 ValidarNuevoCredito(creditoDatos.credito);
 
                 db.creditos.Add(creditoDatos.credito);
@@ -69,6 +74,13 @@ namespace CreditosCore.Controllers.Creditos
 
                 throw;
             }
+        }
+
+        public bool ValidarSiExisteCreditoActualConElCliente(int idCliente)
+        {
+            var creditoPendiente = db.creditos.Where(c => c.ClienteId == idCliente).FirstOrDefault();
+
+            var pagosRealizados = new pagoservice()
         }
 
         public bool ValidarNuevoCredito(CreditosModel credito)
@@ -121,7 +133,10 @@ namespace CreditosCore.Controllers.Creditos
                 throw new CreditoSistemaExcepcion("El monto total debe ser la suma de monto prestado + monto interes");
             }
 
-            
+            if (credito.FechaCredito == DateTime.MinValue)
+            {
+                throw new CreditoSistemaExcepcion("Debe establecer la fecha del credito");
+            }
 
             return true;
            

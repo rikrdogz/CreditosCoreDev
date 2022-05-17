@@ -21,6 +21,10 @@ namespace CreditosCore.Controllers.Creditos
         [Required]
         public DateTime FechaModificacion { get; set; }
 
+        [Required]
+        [Column(TypeName ="Date")]
+        public DateTime FechaCredito { get; set; }
+
         #region Amount
 
         /// <summary>
