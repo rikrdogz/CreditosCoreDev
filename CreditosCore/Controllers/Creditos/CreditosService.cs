@@ -1,4 +1,5 @@
 ﻿using CreditosCore.Controllers.Clientes;
+using CreditosCore.Controllers.Pagos;
 using CreditosCore.Database;
 using CreditosCore.Shared;
 using Microsoft.EntityFrameworkCore;
@@ -34,14 +35,17 @@ namespace CreditosCore.Controllers.Creditos
         {
             var creditoActivo = from credito in db.creditos.AsNoTracking()
                                 join pago in db.pagos.AsNoTracking()
-                                on new { credito.CreditoId } equals new {  pago.CreditoId }
+                                on new { credito.CreditoId } equals new { pago.CreditoId }
                                 join cliente in db.clientes.AsNoTracking()
-                                on new { credito.ClienteId} equals new { cliente.ClienteId}
-                                group pago by new { 
-                                    idCredito = credito.CreditoId, 
+                                on new { credito.ClienteId } equals new { cliente.ClienteId }
+                                where cliente.ClienteId == idCliente
+                                orderby credito.CreditoId
+                                group pago by new
+                                {
+                                    idCredito = credito.CreditoId,
                                     idCliente = credito.ClienteId,
-                                    montoTotalCredito = credito.MontoTotal, 
-                                    montoRecurrente = credito.MontoPago, 
+                                    montoTotalCredito = credito.MontoTotal,
+                                    montoRecurrente = credito.MontoPago,
                                     montoPrestado = credito.MontoPrestamo,
                                     nombre = cliente.Nombre,
                                     paterno = cliente.ApellidoPaterno,
@@ -50,15 +54,31 @@ namespace CreditosCore.Controllers.Creditos
                                     fechaCreacionPago = pago.fechaCreacion,
                                     idPago = pago.PagoId
                                 } into grupoPago
-                                
-                                where grupoPago.Sum(p => p.Monto) < grupoPago.Key.montoTotalCredito & grupoPago.Key.idCliente == idCliente
-                                orderby grupoPago.Key.idPago descending
-                                select new CreditoActivoViewModel() { idCredito = grupoPago.Key.idCredito, montoPagado = grupoPago.Sum(p => p.Monto), montoPrestado = grupoPago.Key.montoPrestado, pendientePago = ( grupoPago.Key.montoPrestado - grupoPago.Sum(p => p.Monto)),
-                                    cliente =  $" {grupoPago.Key.nombre} {grupoPago.Key.paterno} {grupoPago.Key.materno}"
+                                select new CreditoActivoViewModel()
+                                {
+                                    idCredito = grupoPago.Key.idCredito,
+                                    montoPagado = grupoPago.Sum(p => p.Monto),
+                                    montoTotal = grupoPago.Key.montoTotalCredito,
+                                    fechaUltimoPago = grupoPago.Key.fechaPago.ToString("dd-MM-yyyy"),
+                                    idPagoUltimo = grupoPago.Key.idPago,
+                                    pendientePago = (grupoPago.Key.montoPrestado - grupoPago.Sum(p => p.Monto)),
+                                    cliente = $" {grupoPago.Key.nombre} {grupoPago.Key.paterno} {grupoPago.Key.materno}"
                                 };
+
             ///Al estar ordenado en forma descendente por el pago se tomara el ultimo pago
             ///pendiente estatus de pago y ultimo pago
-            return creditoActivo.FirstOrDefault();
+            ///
+            var dataCredito = creditoActivo.OrderByDescending(p=> p.idPagoUltimo).FirstOrDefault();
+            var listaCreditoPago = creditoActivo.ToList();
+            var ultimoPago = listaCreditoPago.OrderByDescending(p => p.idPagoUltimo).FirstOrDefault();
+
+            dataCredito.idPagoUltimo = ultimoPago.idPagoUltimo;
+            dataCredito.montoPagado = listaCreditoPago.Sum(p => p.montoPagado);
+            dataCredito.pendientePago = dataCredito.montoTotal - dataCredito.montoPagado;
+
+            dataCredito.fechaUltimoPago = ultimoPago.fechaUltimoPago;
+
+            return dataCredito;
         }
 
         public CreditosModel BuscarCredito(int idCredito)

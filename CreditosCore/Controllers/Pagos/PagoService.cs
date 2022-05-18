@@ -1,6 +1,7 @@
 ﻿using CreditosCore.Controllers.Creditos;
 using CreditosCore.Database;
 using CreditosCore.Shared;
+using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -132,10 +133,19 @@ namespace CreditosCore.Controllers.Pagos
                             descuento = pago.descuento, faltaPago = pago.faltaDePago, 
                             fechaPago = pago.fechaPago.ToString("dd/MM/yyyy"), 
                             monto = pago.Monto, 
-                            fechaCreacionPago = TimeZoneInfo.ConvertTimeFromUtc(pago.fechaCreacion, zoneInfo).ToString("dd/MM/yyyy HH:mm"),
+                            fechaCreacionPago = pago.fechaCreacion.ToString(),
                             nombre = ($"{cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno}"), numeroPago = "#" };
-            
-            return lista.ToList();
+
+            var listaPagos = lista.AsTracking().ToList();
+
+            foreach (var pago in listaPagos)
+            {
+                pago.fechaCreacionPago = DateTime.Parse(pago.fechaCreacionPago).AddSeconds(30).Humanize(true).ToString();
+                
+
+            }
+
+            return listaPagos.ToList();
         }
 
         public int AgregarPagoCliente(PagosModel pago)
