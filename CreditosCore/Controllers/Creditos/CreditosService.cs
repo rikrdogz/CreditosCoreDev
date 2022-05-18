@@ -45,15 +45,19 @@ namespace CreditosCore.Controllers.Creditos
                                     montoPrestado = credito.MontoPrestamo,
                                     nombre = cliente.Nombre,
                                     paterno = cliente.ApellidoPaterno,
-                                    materno = cliente.ApellidoMaterno
+                                    materno = cliente.ApellidoMaterno,
+                                    fechaPago = pago.fechaPago,
+                                    fechaCreacionPago = pago.fechaCreacion,
+                                    idPago = pago.PagoId
                                 } into grupoPago
                                 
                                 where grupoPago.Sum(p => p.Monto) < grupoPago.Key.montoTotalCredito & grupoPago.Key.idCliente == idCliente
-                                orderby grupoPago.Key.idCredito descending
+                                orderby grupoPago.Key.idPago descending
                                 select new CreditoActivoViewModel() { idCredito = grupoPago.Key.idCredito, montoPagado = grupoPago.Sum(p => p.Monto), montoPrestado = grupoPago.Key.montoPrestado, pendientePago = ( grupoPago.Key.montoPrestado - grupoPago.Sum(p => p.Monto)),
                                     cliente =  $" {grupoPago.Key.nombre} {grupoPago.Key.paterno} {grupoPago.Key.materno}"
                                 };
-
+            ///Al estar ordenado en forma descendente por el pago se tomara el ultimo pago
+            ///pendiente estatus de pago y ultimo pago
             return creditoActivo.FirstOrDefault();
         }
 

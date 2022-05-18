@@ -12,6 +12,7 @@ namespace CreditosCore.Controllers.Pagos
     public class PagoService
     {
         SqlDataContext db;
+        TimeZoneInfo zoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time (Mexico)");
 
         public PagoService()
         {
@@ -126,8 +127,14 @@ namespace CreditosCore.Controllers.Pagos
                         on new { credito.ClienteId } equals new { cliente.ClienteId }
                         where cliente.ClienteId == idCliente
                         orderby pago.PagoId
-                        select new PagoViewModel() { idPago = pago.PagoId, descuento = pago.descuento, faltaPago = pago.faltaDePago, fechaPago = pago.fechaPago.ToShortDateString(), monto = pago.Monto, nombre = ($"{cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno}"), numeroPago = "#" };
-
+                        select new PagoViewModel() { 
+                            idPago = pago.PagoId, 
+                            descuento = pago.descuento, faltaPago = pago.faltaDePago, 
+                            fechaPago = pago.fechaPago.ToString("dd/MM/yyyy"), 
+                            monto = pago.Monto, 
+                            fechaCreacionPago = TimeZoneInfo.ConvertTimeFromUtc(pago.fechaCreacion, zoneInfo).ToString("dd/MM/yyyy HH:mm"),
+                            nombre = ($"{cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno}"), numeroPago = "#" };
+            
             return lista.ToList();
         }
 
@@ -135,6 +142,11 @@ namespace CreditosCore.Controllers.Pagos
         {
             try
             {
+                if (pago?.fechaCreacion != null)
+                {
+                    pago.fechaCreacion = DateTime.UtcNow.ToUniversalTime();
+                }
+
                 if (ValidacionPagoNuevo(pago))
                 {
                     db.Add(pago);

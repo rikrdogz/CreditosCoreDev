@@ -13,6 +13,7 @@ namespace CreditosCore.Controllers.Pagos
         public decimal descuento { get; set; }
         public decimal faltaPago { get; set; }
         public string fechaPago { get; set; }
+        public string fechaCreacionPago { get; set; }
         public string numeroPago { get; set; }
     }
 }
