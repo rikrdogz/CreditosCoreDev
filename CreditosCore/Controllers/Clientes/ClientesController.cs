@@ -33,6 +33,19 @@ namespace CreditosCore.Controllers.Clientes
             }
         }
 
+        [HttpGet("info")]
+        public IActionResult info()
+        {
+            try
+            {
+                return Ok(servicioCliente.ObtenerClientesCredito());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public IActionResult guardarCliente([FromBody] ClientesModel cliente)
         {

@@ -31,7 +31,7 @@ namespace CreditosCore.Controllers.Creditos
         }
 
         [HttpPost]
-        public IActionResult GuardarCredito([FromBody] CreditoViewModel creditoDatos)
+        public IActionResult GuardarCredito([FromBody] CreditosModel creditoDatos)
         {
             try
             {
@@ -65,6 +65,19 @@ namespace CreditosCore.Controllers.Creditos
             try
             {
                 return Ok(creditoServicio.ObtenerCreditoActivo(idCliente));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("creditospendientes")]
+        public IActionResult creditosPendientes()
+        {
+            try
+            {
+                return Ok(creditoServicio.BuscarCreditosPendientesPago());
             }
             catch (Exception ex)
             {

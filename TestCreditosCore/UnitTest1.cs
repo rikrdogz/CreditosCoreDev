@@ -46,7 +46,7 @@ namespace TestCreditosCore
                 ApellidoMaterno = Faker.Name.Middle(),
                 ApellidoPaterno = Faker.Name.Last(),
                 Correo = Faker.Internet.Email(),
-                Nombre = Faker.Name.FullName()
+                Nombre = Faker.Name.FullName(Faker.NameFormats.Standard)
             };
 
             clientesTemporales.Add(cliente);
@@ -88,26 +88,24 @@ namespace TestCreditosCore
         {
             //obtener un cliente por default
             var clienteDefault = serviceCliente.ObtenerListaClientes().FirstOrDefault();
-            var datosCredito = new CreditoViewModel()
+
+            var credito = new CreditosModel()
             {
-                cliente = clienteDefault,
-                credito = new CreditosModel()
-                {
-                    ClienteId = clienteDefault.ClienteId,
-                    ComisionFaltaPago = 20,
-                    DescuentoPagoFinal = 30,
-                    FechaCredito = new System.DateTime(2022, 04, 29),
-                    Folio = "111",
-                    MontoInteres = 350,
-                    MontoPago = 150,
-                    MontoPrestamo = 1000,
-                    MontoTotal = 1350,
-                    Plazos = 9,
-                    TipoPago = 1
-                }
+                ClienteId = clienteDefault.ClienteId,
+                ComisionFaltaPago = 20,
+                DescuentoPagoFinal = 30,
+                FechaCredito = new System.DateTime(2022, 04, 29),
+                Folio = "111",
+                MontoInteres = 350,
+                MontoPago = 150,
+                MontoPrestamo = 1000,
+                MontoTotal = 1350,
+                Plazos = 9,
+                TipoPago = 1
             };
 
-            var idCredito = serviceCreditos.GuardarCredito(datosCredito);
+
+            var idCredito = serviceCreditos.GuardarCredito(credito);
 
             bool Comparacion = (idCredito > 0);
 
@@ -115,7 +113,7 @@ namespace TestCreditosCore
 
             if (Comparacion)
             {
-                this.creditoAgregados.Add(datosCredito.credito);
+                this.creditoAgregados.Add(credito);
             }
 
         }
@@ -146,17 +144,17 @@ namespace TestCreditosCore
         [Test, Order(6)]
         public void AgregarPagoCreditoExistente()
         {
-            foreach (var credito in servicePago.BuscarCreditosPendientesPago())
+            foreach (var credito in serviceCreditos.BuscarCreditosPendientesPago())
             {
                 for (int i = 0; i < 2; i++)
                 {
                     var pago = new PagosModel()
                     {
-                        CreditoId = credito.creditoId,
+                        CreditoId = credito.idCredito,
                         fechaCreacion = System.DateTime.UtcNow,
                         EstatusId = 1,
                         idUsuario = 1,
-                        Monto = 150,
+                        Monto = credito.montoRecurrente < credito.pendientePago ? credito.montoRecurrente : credito.pendientePago,
                         fechaPago = System.DateTime.UtcNow
 
                     };
@@ -212,7 +210,7 @@ namespace TestCreditosCore
         [Test, Order(7)]
         public void ObtenerCreditosPendientes()
         {
-            var lista = servicePago.BuscarCreditosPendientesPago();
+            var lista = serviceCreditos.BuscarCreditosPendientesPago();
 
             Assert.IsTrue(lista.Count > 0, "No se encontraron creditos pendientes");
 

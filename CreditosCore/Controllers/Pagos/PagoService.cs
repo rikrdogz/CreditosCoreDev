@@ -93,20 +93,6 @@ namespace CreditosCore.Controllers.Pagos
 
         }
 
-        public List<PagoCreditoSumViewModel> BuscarCreditosPendientesPago()
-        {
-            var lista = from credito in db.creditos.AsNoTracking()
-                        join pago in db.pagos.AsNoTracking()
-                        on credito.CreditoId equals pago.CreditoId
-                        group pago by new { idCredito = credito.CreditoId, montoTotalCredito = credito.MontoTotal, montoRecurrente = credito.MontoPago } into grupoPago
-                        where  grupoPago.Sum(p=>p.Monto) < grupoPago.Key.montoTotalCredito
-                        select new PagoCreditoSumViewModel() { creditoId = grupoPago.Key.idCredito, sumaMontos = grupoPago.Sum(p => p.Monto), montoPagoRecurrente = grupoPago.Key.montoRecurrente };
-                       
-
-
-            return lista.ToList();
-        }
-
         public List<PagoCreditoSumViewModel> BuscarCreditosPagadosCompletamente()
         {
             var lista = from credito in db.creditos.AsNoTracking()

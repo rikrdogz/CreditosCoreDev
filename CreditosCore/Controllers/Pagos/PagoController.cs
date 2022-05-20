@@ -43,6 +43,8 @@ namespace CreditosCore.Controllers.Pagos
             }
         }
 
+        
+
         [HttpPost]
         public IActionResult GuardarPago([FromBody] PagosModel pago)
         {
