@@ -20,6 +20,8 @@ namespace CreditosCore.Controllers.Pagos
         public DateTime fechaPago { get; set; }
         public int EstatusId { get; set; }
         public int idUsuario { get; set; }
+        [MaxLength(80)]
+        public string observacion { get; set; }
 
     }
 }
