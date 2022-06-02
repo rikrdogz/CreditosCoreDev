@@ -43,7 +43,18 @@ namespace CreditosCore.Controllers.Pagos
             }
         }
 
-        
+        [HttpGet("credito/{idCredito}")]
+        public IActionResult credito(int idCredito)
+        {
+            try
+            {
+                return Ok(servicePago.ObtenerPagos(idCredito));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
         public IActionResult GuardarPago([FromBody] PagosModel pago)

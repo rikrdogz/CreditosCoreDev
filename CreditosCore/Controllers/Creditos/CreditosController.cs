@@ -30,6 +30,19 @@ namespace CreditosCore.Controllers.Creditos
             }
         }
 
+        [HttpGet("{idCredito}")]
+        public IActionResult Credito(int idCredito)
+        {
+            try
+            {
+                return Ok(creditoServicio.Credito(idCredito));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost]
         public IActionResult GuardarCredito([FromBody] CreditosModel creditoDatos)
         {

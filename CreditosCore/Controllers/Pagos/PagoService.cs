@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace CreditosCore.Controllers.Pagos
@@ -13,11 +14,55 @@ namespace CreditosCore.Controllers.Pagos
     public class PagoService
     {
         SqlDataContext db;
-        TimeZoneInfo zoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time (Mexico)");
+        TimeZoneInfo zoneInfo;
+        const string formatoFecha = "dd/MM/yyyy";
 
         public PagoService()
         {
             db = new SqlDataContext();
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                zoneInfo =TimeZoneInfo.FindSystemTimeZoneById("Central Standard Time (Mexico)");
+            }
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                zoneInfo = TimeZoneInfo.FindSystemTimeZoneById("America/Monterrey");
+            }
+
+
+        }
+
+        public List<PagoViewModel> ObtenerPagos(int idCredito)
+        {
+            try
+            {
+                var pagos = db.pagos.AsNoTracking().Where(p=> p.CreditoId == idCredito).Select(p=> new PagoViewModel() 
+                    { 
+                    idPago = p.PagoId,
+                    descuento = p.descuento,
+                    faltaPago = p.faltaDePago,
+                    fechaCreacionPago = p.fechaCreacion.ToString(),
+                    fechaPago = p.fechaPago.ToString(formatoFecha),
+                    monto = p.Monto,
+                    nombre = "cliente", 
+                    numeroPago = "#numer"
+                    }).OrderByDescending(p=> p.idPago).ToList();
+
+                foreach (var pago in pagos)
+                {
+                    pago.fechaCreacionPago = DateTime.Parse(pago.fechaCreacionPago).AddSeconds(1).Humanize(true).ToString();
+
+                }
+
+                return pagos;
+            }
+            catch (Exception)
+            {
+
+                throw new Exception("No se pudo obtener los pagos");
+            }
         }
 
         public List<PagosModel> ObtenerPagos()
@@ -117,7 +162,7 @@ namespace CreditosCore.Controllers.Pagos
                         select new PagoViewModel() { 
                             idPago = pago.PagoId, 
                             descuento = pago.descuento, faltaPago = pago.faltaDePago, 
-                            fechaPago = pago.fechaPago.ToString("dd/MM/yyyy"), 
+                            fechaPago = pago.fechaPago.ToString(formatoFecha), 
                             monto = pago.Monto, 
                             fechaCreacionPago = pago.fechaCreacion.ToString(),
                             nombre = ($"{cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno}"), numeroPago = "#" };
@@ -141,6 +186,11 @@ namespace CreditosCore.Controllers.Pagos
                 if (pago?.fechaCreacion != null)
                 {
                     pago.fechaCreacion = DateTime.UtcNow.ToUniversalTime();
+                }
+
+                if (pago?.observacion == null)
+                {
+                    pago.observacion = string.Empty;
                 }
 
                 if (ValidacionPagoNuevo(pago))

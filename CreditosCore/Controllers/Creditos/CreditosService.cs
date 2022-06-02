@@ -25,6 +25,36 @@ namespace CreditosCore.Controllers.Creditos
             return listaCreditos;
         }
 
+        public CreditoActivoViewModel Credito(int idCredito)
+        {
+            var creditos = from grupoCredito in ObtenerQueryCreditoConCliente(0, idCredito: idCredito).ToList()
+                           select new
+                           {
+                               creditoId = grupoCredito.idCredito,
+                               cliente = grupoCredito.cliente,
+                               idCliente = grupoCredito.idCliente,
+                               montoTotal = grupoCredito.montoTotal,
+                               montoRecurrente = grupoCredito.montoRecurrente,
+                               pagos = db.pagos.AsNoTracking().Where(p => p.CreditoId == grupoCredito.idCredito).ToList(),
+                           }
+                              into joinCreditoPago
+                           select new CreditoActivoViewModel()
+                           {
+                               idCredito = joinCreditoPago.creditoId,
+                               cliente = joinCreditoPago.cliente,
+                               idCliente = joinCreditoPago.idCliente,
+                               montoTotal = joinCreditoPago.montoTotal,
+                               idPagoUltimo = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).FirstOrDefault().PagoId,
+                               fechaUltimoPago = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).FirstOrDefault().fechaPago.ToString("dd/MM/yyyy"),
+                               montoPagado = joinCreditoPago.pagos.ToList().Sum(p => p.Monto),
+                               numeroPago = 0,
+                               montoRecurrente = joinCreditoPago.montoRecurrente,
+                               pendientePago = joinCreditoPago.montoTotal - joinCreditoPago.pagos.ToList().Sum(p => p.Monto)
+                           };
+
+            return creditos.FirstOrDefault();
+        }
+
         public List<CreditosModel> ObtenerCreditosDelCliente(int idCliente)
         {
             var listaCreditos = db.creditos.AsNoTracking().Where(c => c.ClienteId == idCliente).ToList();
@@ -99,13 +129,14 @@ namespace CreditosCore.Controllers.Creditos
             return creditos.Where(c=> c.pendientePago > 0).ToList();
         }
 
-        public IEnumerable<CreditoActivoViewModel> ObtenerQueryCreditoConCliente(int idCliente)
+        public IEnumerable<CreditoActivoViewModel> ObtenerQueryCreditoConCliente(int idCliente, int idCredito = 0)
         {
             return from credito in db.creditos.AsNoTracking()
                    join cliente in db.clientes.AsNoTracking()
                    on credito.ClienteId equals cliente.ClienteId
 
                    where cliente.ClienteId == (idCliente ==0 ? cliente.ClienteId : idCliente)
+                   && credito.CreditoId ==(idCredito == 0 ? credito.CreditoId : idCredito)
 
                    select new CreditoActivoViewModel()
                    {
