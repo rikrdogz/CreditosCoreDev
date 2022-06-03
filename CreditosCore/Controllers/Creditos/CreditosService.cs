@@ -63,6 +63,10 @@ namespace CreditosCore.Controllers.Creditos
 
         public CreditoActivoViewModel ObtenerCreditoActivo(int idCliente)
         {
+            if (idCliente == 0)
+            {
+                return null;
+            }
             var creditoActivo = from grupoCredito in ObtenerQueryCreditoConCliente(idCliente).ToList()
                                 select new
                                 {
