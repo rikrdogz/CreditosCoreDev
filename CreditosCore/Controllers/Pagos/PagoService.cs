@@ -47,7 +47,7 @@ namespace CreditosCore.Controllers.Pagos
                     fechaPago = p.fechaPago.ToString(formatoFecha),
                     monto = p.Monto,
                     nombre = "cliente", 
-                    numeroPago = "#numer"
+                    numeroPago = p.observacion
                     }).OrderByDescending(p=> p.idPago).ToList();
 
                 foreach (var pago in pagos)
