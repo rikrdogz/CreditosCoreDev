@@ -17,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CreditosCore.Shared;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading;
+using System.Globalization;
 
 namespace CreditosCore
 {
@@ -124,9 +126,12 @@ namespace CreditosCore
                 endpoints.MapControllers();
             });
 
-            
+            //set Spanish, for use at Humanizer
+            CultureInfo cultureInfo = CultureInfo.GetCultureInfo("es-ES");
+            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+            Thread.CurrentThread.CurrentUICulture = cultureInfo;
 
-            
+
         }
     }
 }
