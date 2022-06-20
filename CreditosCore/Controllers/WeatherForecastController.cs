@@ -28,6 +28,8 @@ namespace CreditosCore.Controllers
         {
             var rng = new Random();
 
+            
+
             return Summaries.Select(s => new WeatherForecast()
             {
                 Date = DateTime.Now.AddDays(rng.Next(1,3)),
@@ -36,6 +38,19 @@ namespace CreditosCore.Controllers
             }).ToArray();
 
            
+        }
+
+        [HttpGet("test")]
+        public IActionResult GetConnection()
+        {
+            try
+            {
+                return Ok("Con.." + Environment.GetEnvironmentVariable("conexionbasedatos"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
