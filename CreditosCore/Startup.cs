@@ -58,6 +58,7 @@ namespace CreditosCore
             });
             AddSwagger(services);
 
+            services.AddDbContext<SqlDataContext>();
             
         }
 
@@ -98,7 +99,7 @@ namespace CreditosCore
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SqlDataContext dataContext)
         {
 
             app.UseSwagger(c =>
@@ -125,6 +126,9 @@ namespace CreditosCore
             {
                 endpoints.MapControllers();
             });
+
+            //add context for migration init
+            dataContext.Database.Migrate();
 
             //set Spanish, for use at Humanizer
             CultureInfo cultureInfo = CultureInfo.GetCultureInfo("es-ES");

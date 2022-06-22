@@ -20,7 +20,7 @@ namespace CreditosCore.Database
         public DbSet<UsuariosModel> usuarios { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable("conexionbasedatos", EnvironmentVariableTarget.Process));
+            optionsBuilder.UseSqlServer(Environment.GetEnvironmentVariable(Program.EntornoConexion, EnvironmentVariableTarget.Process));
         }
 
     }

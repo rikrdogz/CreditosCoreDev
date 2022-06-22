@@ -45,7 +45,7 @@ namespace CreditosCore.Controllers
         {
             try
             {
-                return Ok("Con.." + Environment.GetEnvironmentVariable("conexionbasedatos"));
+                return Ok("Con.." + Environment.GetEnvironmentVariable(Program.EntornoConexion)?.Substring(0, 80));
             }
             catch (Exception ex)
             {

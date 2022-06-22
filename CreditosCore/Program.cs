@@ -11,6 +11,7 @@ namespace CreditosCore
 {
     public class Program
     {
+        public const string EntornoConexion = "conexionbasedatos";
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
