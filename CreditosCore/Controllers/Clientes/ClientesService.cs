@@ -1,4 +1,5 @@
 ﻿using CreditosCore.Database;
+using CreditosCore.Shared;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace CreditosCore.Controllers.Clientes
             {
                 return db.clientes.AsNoTracking().ToList();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;
@@ -81,10 +82,65 @@ namespace CreditosCore.Controllers.Clientes
 
         public int AgregarCliente(ClientesModel cliente)
         {
-            db.clientes.Add(cliente);
-            db.SaveChanges();
+            try
+            {
+                if (EsClienteExistente(cliente))
+                {
+                    throw new CreditoSistemaExcepcion("Ya existe cliente con estos datos");
+                }
 
-            return cliente.ClienteId;
+                db.clientes.Add(cliente);
+                db.SaveChanges();
+                return cliente.ClienteId;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
+        }
+
+        private bool EsClienteExistente(ClientesModel cliente)
+        {
+            var clienteEncontrado = db.clientes.AsNoTracking()
+                    .Where(c => c.ClienteId != cliente.ClienteId
+                        && c.Nombre == cliente.Nombre
+                        && c.ApellidoPaterno == cliente.ApellidoPaterno
+                        && c.ApellidoMaterno == cliente.ApellidoMaterno).FirstOrDefault();
+
+            return clienteEncontrado != null;
+
+        }
+
+        public bool ActualizarCliente(ClientesModel cliente)
+        {
+            bool clienteActualizado = false;
+
+            try
+            {
+                if (EsClienteExistente(cliente))
+                {
+                    throw new CreditoSistemaExcepcion("Ya existe un cliente con estos datos");
+                }
+                var clienteDB = db.clientes.Where(c => c.ClienteId == cliente.ClienteId).FirstOrDefault();
+
+                if (clienteDB != null)
+                {
+                    clienteDB.Nombre = cliente.Nombre;
+                    clienteDB.Correo = cliente.Correo;
+                    clienteDB.ApellidoMaterno = cliente.ApellidoMaterno;
+                    clienteDB.ApellidoPaterno = cliente.ApellidoPaterno;
+                    clienteActualizado = true;
+                    db.SaveChanges();
+                }
+
+                return clienteActualizado;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

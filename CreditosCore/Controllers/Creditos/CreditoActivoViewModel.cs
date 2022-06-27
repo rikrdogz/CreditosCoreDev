@@ -18,7 +18,7 @@ namespace CreditosCore.Controllers.Creditos
         public decimal montoTotal { get; set; }
         public decimal montoPagado { get; set; }
         public string cliente { get; set; }
-
+        public string fechaModificacion { get; set; }
         public decimal montoRecurrente { get; set; }
 
     }

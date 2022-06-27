@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CreditosCore.Shared;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +58,24 @@ namespace CreditosCore.Controllers.Clientes
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut]
+        public IActionResult ActualizarCliente([FromBody] ClientesModel cliente)
+        {
+            try
+            {
+                var clienteGuardado = servicioCliente.ActualizarCliente(cliente);
+                return Ok(clienteGuardado);
+            }
+            catch (CreditoSistemaExcepcion ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("No se pudo guardar el cliente");
             }
         }
     }

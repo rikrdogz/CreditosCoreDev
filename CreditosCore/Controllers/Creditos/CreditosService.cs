@@ -2,6 +2,7 @@
 using CreditosCore.Controllers.Pagos;
 using CreditosCore.Database;
 using CreditosCore.Shared;
+using Humanizer;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,7 @@ namespace CreditosCore.Controllers.Creditos
                                idCliente = grupoCredito.idCliente,
                                montoTotal = grupoCredito.montoTotal,
                                montoRecurrente = grupoCredito.montoRecurrente,
+                               fechaModificacion = grupoCredito.fechaModificacion.ToString(),
                                pagos = db.pagos.AsNoTracking().Where(p => p.CreditoId == grupoCredito.idCredito).ToList(),
                            }
                               into joinCreditoPago
@@ -52,11 +54,19 @@ namespace CreditosCore.Controllers.Creditos
                                fechaUltimoPago = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).FirstOrDefault().fechaPago.ToString("dd/MM/yyyy"),
                                montoPagado = joinCreditoPago.pagos.ToList().Sum(p => p.Monto),
                                numeroPago = 0,
+                               fechaModificacion = joinCreditoPago.fechaModificacion,
                                montoRecurrente = joinCreditoPago.montoRecurrente,
                                pendientePago = joinCreditoPago.montoTotal - joinCreditoPago.pagos.ToList().Sum(p => p.Monto)
                            };
 
-            return creditos.FirstOrDefault();
+            var creditoEncontrado = creditos.OrderByDescending(c => c.idCredito).FirstOrDefault();
+            //Establecer fecha humanizer
+            if (creditoEncontrado != null)
+            {
+                creditoEncontrado.fechaModificacion = DateTime.Parse(creditoEncontrado.fechaModificacion).Humanize(true).ToString();
+            }
+
+            return creditoEncontrado;
         }
 
         public List<CreditosModel> ObtenerCreditosDelCliente(int idCliente)
@@ -152,7 +162,8 @@ namespace CreditosCore.Controllers.Creditos
                        idCliente = cliente.ClienteId,
                        cliente = $"{cliente.Nombre} {cliente.ApellidoPaterno} {cliente.ApellidoMaterno}",
                        montoTotal = credito.MontoTotal,
-                       montoRecurrente = credito.MontoPago
+                       montoRecurrente = credito.MontoPago,
+                       fechaModificacion = credito.FechaModificacion.ToString()
                    }
                     into grupoCredito select grupoCredito;
         }
@@ -161,8 +172,6 @@ namespace CreditosCore.Controllers.Creditos
         {
             try
             {
-                
-
                 //validacion
                 if (creditoDatos.ClienteId == 0)
                 {
@@ -178,9 +187,9 @@ namespace CreditosCore.Controllers.Creditos
                 }
 
                 //Establecer Campos de fecha
-                creditoDatos.FechaCreacion = System.DateTime.Today;
+                creditoDatos.FechaCreacion = DateTime.UtcNow.ToUniversalTime();
 
-                creditoDatos.FechaModificacion = System.DateTime.Today;
+                creditoDatos.FechaModificacion = DateTime.UtcNow.ToUniversalTime();
 
                 ValidarNuevoCredito(creditoDatos);
 
