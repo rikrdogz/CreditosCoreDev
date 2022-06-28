@@ -50,8 +50,6 @@ namespace CreditosCore.Controllers.Creditos
                                cliente = joinCreditoPago.cliente,
                                idCliente = joinCreditoPago.idCliente,
                                montoTotal = joinCreditoPago.montoTotal,
-                               idPagoUltimo = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).FirstOrDefault().PagoId,
-                               fechaUltimoPago = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).FirstOrDefault().fechaPago.ToString("dd/MM/yyyy"),
                                montoPagado = joinCreditoPago.pagos.ToList().Sum(p => p.Monto),
                                numeroPago = 0,
                                fechaModificacion = joinCreditoPago.fechaModificacion,
@@ -66,6 +64,8 @@ namespace CreditosCore.Controllers.Creditos
                 creditoEncontrado.fechaModificacion = DateTime.Parse(creditoEncontrado.fechaModificacion).Humanize(true).ToString();
             }
 
+            creditoEncontrado.idPagoUltimo = EstablecerPagoDefault(ref creditoEncontrado).PagoId;
+
             return creditoEncontrado;
         }
 
@@ -75,13 +75,8 @@ namespace CreditosCore.Controllers.Creditos
             return listaCreditos;
         }
 
-        public CreditoActivoViewModel ObtenerCreditoActivo(int idCliente)
+        private PagosModel EstablecerPagoDefault(ref CreditoActivoViewModel creditoActivo)
         {
-            if (idCliente == 0)
-            {
-                return null;
-            }
-
             var sinPago = new PagosModel()
             {
                 PagoId = 0,
@@ -89,7 +84,47 @@ namespace CreditosCore.Controllers.Creditos
                 Monto = 0
             };
 
-            var query = ObtenerQueryCreditoConCliente(idCliente);
+            if (creditoActivo == null)
+            {
+                creditoActivo = new CreditoActivoViewModel()
+                {
+                    idCliente = 0,
+                    pendientePago = 0,
+                    numeroPago = 0,
+                    montoTotal = 0,
+                    montoPagado = 0,
+                    idPagoUltimo = 0,
+                    montoRecurrente = 0,
+                    fechaModificacion = "",
+                    fechaUltimoPago = "",
+                    cliente = "",
+                    idCredito = 0,
+                    pagos = null
+                };
+            };
+
+            if (creditoActivo.pagos == null)
+            {
+                creditoActivo.pagos = new List<PagosModel>() { };
+            }
+
+            var pagos = creditoActivo.pagos.OrderByDescending(p => p.PagoId).DefaultIfEmpty(sinPago);
+
+            var unicoPago = pagos.FirstOrDefault();
+
+            creditoActivo.fechaUltimoPago = unicoPago.PagoId == 0 ? ".." : unicoPago.fechaPago.ToString("dd/MM/yyyy");
+
+
+            return pagos.FirstOrDefault();
+        }
+
+        public CreditoActivoViewModel ObtenerCreditoActivo(int idCliente)
+        {
+            if (idCliente == 0)
+            {
+                return null;
+            }
+            var query = ObtenerQueryCreditoConCliente(idCliente).ToList();
 
             var creditoActivo = from grupoCredito in ObtenerQueryCreditoConCliente(idCliente).ToList()
                                 select new
@@ -108,19 +143,16 @@ namespace CreditosCore.Controllers.Creditos
                                     cliente = joinCreditoPago.cliente,
                                     idCliente = joinCreditoPago.idCliente,
                                     montoTotal = joinCreditoPago.montoTotal,
-                                    idPagoUltimo = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).DefaultIfEmpty(sinPago).FirstOrDefault().PagoId,
-                                    fechaUltimoPago = 
-                                        (joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).DefaultIfEmpty(sinPago).FirstOrDefault()).PagoId == 0 
-                                            ? ".." : joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).DefaultIfEmpty(sinPago).FirstOrDefault().fechaPago.ToString("dd/MM/yyyy"),
-                                    montoPagado = joinCreditoPago.pagos.ToList().Sum(p => p.Monto),
+                                    //pagos = joinCreditoPago.pagos,
                                     numeroPago = 0,
                                     montoRecurrente = joinCreditoPago.montoRecurrente,
                                     pendientePago = joinCreditoPago.montoTotal - joinCreditoPago.pagos.ToList().Sum(p => p.Monto)
                                 };
 
-        
 
-            return creditoActivo.OrderByDescending(c => c.idCredito).Where(c => c.pendientePago > 0).FirstOrDefault();
+            var elemento = creditoActivo.OrderByDescending(c => c.idCredito).FirstOrDefault();
+            elemento.idPagoUltimo = EstablecerPagoDefault(ref elemento).PagoId;
+            return elemento;
         }
 
         public CreditosModel BuscarCredito(int idCredito)

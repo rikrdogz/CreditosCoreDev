@@ -20,6 +20,7 @@ namespace CreditosCore.Controllers.Creditos
         public string cliente { get; set; }
         public string fechaModificacion { get; set; }
         public decimal montoRecurrente { get; set; }
+        public List<PagosModel> pagos { get; set; }
 
     }
 }
