@@ -52,6 +52,7 @@ namespace CreditosCore.Controllers.Creditos
                                montoTotal = joinCreditoPago.montoTotal,
                                montoPagado = joinCreditoPago.pagos.ToList().Sum(p => p.Monto),
                                numeroPago = 0,
+                               pagos = joinCreditoPago.pagos,
                                fechaModificacion = joinCreditoPago.fechaModificacion,
                                montoRecurrente = joinCreditoPago.montoRecurrente,
                                pendientePago = joinCreditoPago.montoTotal - joinCreditoPago.pagos.ToList().Sum(p => p.Monto)
@@ -113,9 +114,9 @@ namespace CreditosCore.Controllers.Creditos
             var unicoPago = pagos.FirstOrDefault();
 
             creditoActivo.fechaUltimoPago = unicoPago.PagoId == 0 ? ".." : unicoPago.fechaPago.ToString("dd/MM/yyyy");
+            creditoActivo.idPagoUltimo = unicoPago.PagoId;
 
-
-            return pagos.FirstOrDefault();
+            return (pagos.FirstOrDefault() == null ? sinPago : pagos.FirstOrDefault());
         }
 
         public CreditoActivoViewModel ObtenerCreditoActivo(int idCliente)
@@ -143,7 +144,7 @@ namespace CreditosCore.Controllers.Creditos
                                     cliente = joinCreditoPago.cliente,
                                     idCliente = joinCreditoPago.idCliente,
                                     montoTotal = joinCreditoPago.montoTotal,
-                                    //pagos = joinCreditoPago.pagos,
+                                    pagos = joinCreditoPago.pagos,
                                     numeroPago = 0,
                                     montoRecurrente = joinCreditoPago.montoRecurrente,
                                     pendientePago = joinCreditoPago.montoTotal - joinCreditoPago.pagos.ToList().Sum(p => p.Monto)
@@ -151,7 +152,7 @@ namespace CreditosCore.Controllers.Creditos
 
 
             var elemento = creditoActivo.OrderByDescending(c => c.idCredito).FirstOrDefault();
-            elemento.idPagoUltimo = EstablecerPagoDefault(ref elemento).PagoId;
+            EstablecerPagoDefault(ref elemento);
             return elemento;
         }
 
