@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TestCreditosCore": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "conexionbasedatos": "CreditosTest.db"
+      }
+    }
+  }
+}

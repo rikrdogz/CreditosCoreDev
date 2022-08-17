@@ -6,6 +6,8 @@ using CreditosCore.Controllers.Creditos;
 using System.Collections.Generic;
 using CreditosCore.Controllers.Pagos;
 using CreditosCore.Shared;
+using CreditosCore.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace TestCreditosCore
 {
@@ -19,6 +21,8 @@ namespace TestCreditosCore
         List<ClientesModel> ClientesAgregados;
         List<CreditosModel> creditoAgregados;
 
+        SqlDataContext dataContext;
+
         public Tests()
         {
             serviceCliente = new ClientesService();
@@ -28,12 +32,16 @@ namespace TestCreditosCore
             ClientesAgregados = new List<ClientesModel>();
             clientesTemporales = new List<ClientesModel>();
             creditoAgregados = new List<CreditosModel>();
+
+            
         }
 
         [SetUp]
         public void Setup()
         {
-            
+            SqlDataContext.fileNameDatabase = "CreditoTest.db";
+            dataContext = new SqlDataContext();
+            dataContext.Database.Migrate();
         }
 
    

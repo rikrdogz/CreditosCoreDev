@@ -164,6 +164,12 @@ namespace CreditosCore.Controllers.Creditos
 
         public List<CreditoActivoViewModel> BuscarCreditosPendientesPago()
         {
+            var sinPago = new PagosModel()
+            {
+                PagoId = 0,
+                fechaPago = DateTime.Now,
+                Monto = 0
+            };
 
             var creditos = from grupoCredito in ObtenerQueryCreditoConCliente(0).ToList()
                            select new
@@ -182,8 +188,8 @@ namespace CreditosCore.Controllers.Creditos
                                cliente = joinCreditoPago.cliente,
                                idCliente = joinCreditoPago.idCliente,
                                montoTotal = joinCreditoPago.montoTotal,
-                               idPagoUltimo = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).FirstOrDefault().PagoId,
-                               fechaUltimoPago = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).FirstOrDefault().fechaPago.ToString("dd/MM/yyyy"),
+                               idPagoUltimo = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).DefaultIfEmpty(sinPago).FirstOrDefault().PagoId,
+                               fechaUltimoPago = joinCreditoPago.pagos.ToList().OrderByDescending(p => p.PagoId).DefaultIfEmpty(sinPago).FirstOrDefault().fechaPago.ToString("dd/MM/yyyy"),
                                montoPagado = joinCreditoPago.pagos.ToList().Sum(p => p.Monto),
                                numeroPago = 0,
                                montoRecurrente = joinCreditoPago.montoRecurrente,
