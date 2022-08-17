@@ -128,6 +128,7 @@ namespace CreditosCore
             });
 
             //add context for migration init
+            SqlDataContext.fileNameDatabase = Environment.GetEnvironmentVariable(Program.EntornoConexion, EnvironmentVariableTarget.Process);
             dataContext.Database.Migrate();
 
             //set Spanish, for use at Humanizer
