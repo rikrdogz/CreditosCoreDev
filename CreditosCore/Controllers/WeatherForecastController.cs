@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CreditosCore.Controllers
@@ -45,7 +46,26 @@ namespace CreditosCore.Controllers
         {
             try
             {
-                return Ok("Con.." + Environment.GetEnvironmentVariable(Program.EntornoConexion)?.Substring(0, 80));
+                var DatosAmbiente = new StringBuilder();
+                var data = string.Empty;
+
+                data = $" EntornoConexion {Environment.GetEnvironmentVariable(Program.EntornoConexion)} ";
+                DatosAmbiente.Append(data);
+
+                data = $" EntornoConexion Process {Environment.GetEnvironmentVariable(Program.EntornoConexion, EnvironmentVariableTarget.Process)} ";
+                DatosAmbiente.Append(data);
+
+                data = $" EntornoConexion Machine {Environment.GetEnvironmentVariable(Program.EntornoConexion, EnvironmentVariableTarget.Process)} ";
+                DatosAmbiente.Append(data);
+
+                data = $" EntornoConexion User {Environment.GetEnvironmentVariable(Program.EntornoConexion, EnvironmentVariableTarget.Process)} ";
+                DatosAmbiente.Append(data);
+
+                data = $" entorno establecido {Database.SqlDataContext.fileNameDatabase}";
+                DatosAmbiente.Append(data);
+
+                Program._logger.Info("Consultando datos de entorno");
+                return Ok(DatosAmbiente.ToString());
             }
             catch (Exception ex)
             {
