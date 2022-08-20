@@ -1,0 +1,26 @@
+2022-08-20 13:07:37.7732 Info Message Template Auto Format enabled
+2022-08-20 13:07:37.8039 Info Loading assembly: NLog.Web.AspNetCore
+2022-08-20 13:07:37.8342 Info Adding target FileTarget(Name=allfile)
+2022-08-20 13:07:37.8359 Info Adding target FileTarget(Name=ownFile-web)
+2022-08-20 13:07:37.8359 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2022-08-20 13:07:37.8536 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=54, FilePath=C:\Users\RICARDO\source\repos\CreditosCoreDev\CreditosCore\bin\Debug\netcoreapp3.1\NLog.config
+2022-08-20 13:12:24.4836 Info Message Template Auto Format enabled
+2022-08-20 13:12:24.4983 Info Loading assembly: NLog.Web.AspNetCore
+2022-08-20 13:12:24.5294 Info Adding target FileTarget(Name=allfile)
+2022-08-20 13:12:24.5294 Info Adding target FileTarget(Name=ownFile-web)
+2022-08-20 13:12:24.5294 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2022-08-20 13:12:24.5481 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=54, FilePath=C:\Users\RICARDO\source\repos\CreditosCoreDev\CreditosCore\bin\Debug\netcoreapp3.1\NLog.config
+2022-08-20 13:12:32.3410 Info AppDomain Shutting down. LogFactory closing...
+2022-08-20 13:12:32.3544 Info LogFactory has been closed.
+2022-08-20 13:15:52.7452 Info Message Template Auto Format enabled
+2022-08-20 13:15:52.7601 Info Loading assembly: NLog.Web.AspNetCore
+2022-08-20 13:15:52.7937 Info Adding target FileTarget(Name=allfile)
+2022-08-20 13:15:52.7937 Info Adding target FileTarget(Name=ownFile-web)
+2022-08-20 13:15:52.7937 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2022-08-20 13:15:52.8128 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=54, FilePath=C:\Users\RICARDO\source\repos\CreditosCoreDev\CreditosCore\bin\Debug\netcoreapp3.1\NLog.config
+2022-08-20 13:17:32.1750 Info Message Template Auto Format enabled
+2022-08-20 13:17:32.1925 Info Loading assembly: NLog.Web.AspNetCore
+2022-08-20 13:17:32.2339 Info Adding target FileTarget(Name=allfile)
+2022-08-20 13:17:32.2339 Info Adding target FileTarget(Name=ownFile-web)
+2022-08-20 13:17:32.2339 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2022-08-20 13:17:32.2587 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=54, FilePath=C:\Users\RICARDO\source\repos\CreditosCoreDev\CreditosCore\bin\Debug\netcoreapp3.1\NLog.config

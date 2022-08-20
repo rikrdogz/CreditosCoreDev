@@ -21,9 +21,10 @@ namespace CreditosCore.Database
             {
                 isDBFileCreated = true;
                 string _nameVariableEnv = Environment.GetEnvironmentVariable(Program.EntornoConexion, EnvironmentVariableTarget.Process);
-
+                Program._logger.Info("ValueVariable {0}", _nameVariableEnv);
                 if (_nameVariableEnv != null)
                 {
+                    Program._logger.Info("Se establecio variable de entorno");
                     fileNameDatabase = _nameVariableEnv;
                 }
             }

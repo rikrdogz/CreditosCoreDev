@@ -1,4 +1,4 @@
-using CreditosCore.Database;
+﻿using CreditosCore.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -20,13 +20,17 @@ using Microsoft.AspNetCore.Authorization;
 using System.Threading;
 using System.Globalization;
 
+
 namespace CreditosCore
 {
     public class Startup
     {
+        
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Program._logger.Debug("init Main");
         }
 
         public IConfiguration Configuration { get; }
@@ -101,40 +105,55 @@ namespace CreditosCore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SqlDataContext dataContext)
         {
-
-            app.UseSwagger(c =>
+            try
             {
-                c.SerializeAsV2 = true;
-            });
+                app.UseSwagger(c =>
+                {
+                    c.SerializeAsV2 = true;
+                });
 
-            app.UseSwaggerUI(c =>
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
+
+                });
+
+                app.UseDeveloperExceptionPage();
+
+
+
+                app.UseRouting();
+
+                app.UseAuthentication();
+                app.UseAuthorization();
+
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers();
+                });
+
+                //add context for migration init
+                var valueConection = Environment.GetEnvironmentVariable(Program.EntornoConexion, EnvironmentVariableTarget.Process);
+                Program._logger.Info("Value conection {0}", valueConection);
+                SqlDataContext.fileNameDatabase = valueConection;
+                dataContext.Database.Migrate();
+
+                //set Spanish, for use at Humanizer
+                CultureInfo cultureInfo = CultureInfo.GetCultureInfo("es-ES");
+                System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+                Thread.CurrentThread.CurrentUICulture = cultureInfo;
+            }
+            catch (Exception ex)
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cliente API V1");
+                Program._logger.Error("Problema en el COnfigure {0}", ex.Message);
 
-            });
-
-            app.UseDeveloperExceptionPage();
-
+                if (ex.InnerException?.Message != null)
+                {
+                    Program._logger.Error("Problema en el Configure inner {0}", ex.Message);
+                }
+                
+            }
             
-
-            app.UseRouting();
-            
-            app.UseAuthentication();
-            app.UseAuthorization();
-         
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            //add context for migration init
-            SqlDataContext.fileNameDatabase = Environment.GetEnvironmentVariable(Program.EntornoConexion, EnvironmentVariableTarget.Process);
-            dataContext.Database.Migrate();
-
-            //set Spanish, for use at Humanizer
-            CultureInfo cultureInfo = CultureInfo.GetCultureInfo("es-ES");
-            System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-            Thread.CurrentThread.CurrentUICulture = cultureInfo;
 
 
         }

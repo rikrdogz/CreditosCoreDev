@@ -6,12 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NLog;
+using NLog.Web;
+
 
 namespace CreditosCore
 {
     public class Program
     {
         public const string EntornoConexion = "conexionbasedatos";
+        public static Logger _logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
